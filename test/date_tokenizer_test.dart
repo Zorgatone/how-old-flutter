@@ -215,6 +215,11 @@ void main() {
     expect(TokenKind.eof, actualToken4.kind);
     expect(7, actualToken4.start);
     expect(7, actualToken4.end);
+
+    actualToken4 = Tokenizer().next('');
+    expect(TokenKind.eof, actualToken4.kind);
+    expect(0, actualToken4.start);
+    expect(0, actualToken4.end);
   });
 
   test('Date Tokenizer peek', () {
