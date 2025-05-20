@@ -1,13 +1,17 @@
 import 'package:flutter/services.dart';
 
-enum TokenKind { separator, number, invalid, eof }
+enum TokenKind { space, separator, number, invalid, eof }
 
 class Token {
-  TokenKind kind;
-  int start;
-  int end;
+  final TokenKind kind;
+  final int start;
+  final int end;
 
-  Token(this.kind, this.start, this.end);
+  const Token({required this.kind, required this.start, required this.end});
+
+  String getSubstring(String input) {
+    return input.substring(start, end);
+  }
 }
 
 bool isSpace(int codeUnit) {
@@ -19,7 +23,7 @@ bool isDigit(int codeUnit) {
 }
 
 bool isSeparator(int codeUnit) {
-  return 0x2F == codeUnit || 0x2D == codeUnit;
+  return 0x2F == codeUnit || 0x2D == codeUnit || 0x2E == codeUnit;
 }
 
 class Tokenizer {
@@ -38,39 +42,40 @@ class Tokenizer {
 
     // Move to the first rune
     if (!iterator.moveNext()) {
-      return Token(TokenKind.eof, 0, 0);
+      return Token(kind: TokenKind.eof, start: idx, end: idx);
     }
+
+    var start = iterator.rawIndex;
 
     // Skip any starting space
     while (isSpace(iterator.current)) {
       idx = iterator.rawIndex + iterator.currentSize;
       if (!iterator.moveNext()) {
-        return Token(TokenKind.eof, idx, idx);
+        return Token(kind: TokenKind.space, start: start, end: idx);
       }
+
+      return Token(kind: TokenKind.space, start: start, end: idx);
     }
 
     if (isDigit(iterator.current)) {
-      var start = iterator.rawIndex;
       while (isDigit(iterator.current)) {
         idx = iterator.rawIndex + iterator.currentSize;
         if (!iterator.moveNext()) {
-          return Token(TokenKind.number, start, idx);
+          return Token(kind: TokenKind.number, start: start, end: idx);
         }
       }
 
-      return Token(TokenKind.number, start, idx);
+      return Token(kind: TokenKind.number, start: start, end: idx);
     }
 
     if (isSeparator(iterator.current)) {
-      var start = iterator.rawIndex;
       idx = iterator.rawIndex + iterator.currentSize;
-      return Token(TokenKind.separator, start, idx);
+      return Token(kind: TokenKind.separator, start: start, end: idx);
     }
 
-    var start = iterator.rawIndex;
     idx = iterator.rawIndex + iterator.currentSize;
 
-    return Token(TokenKind.invalid, start, idx);
+    return Token(kind: TokenKind.invalid, start: start, end: idx);
   }
 }
 
