@@ -5,6 +5,15 @@ void main() {
   runApp(const MyApp());
 }
 
+const _inputTextStyle = TextStyle(
+  fontFamily: 'RobotoMono',
+  fontSize: 15,
+  fontWeight: FontWeight.normal,
+  wordSpacing: 0,
+  letterSpacing: 0,
+  color: Colors.black,
+);
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -32,6 +41,8 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
+  final _editingController = TextEditingController();
+  final _hintTextStyle = _inputTextStyle.copyWith(color: Colors.black45);
 
   void _incrementCounter() {
     setState(() {
@@ -50,9 +61,34 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            TextField(
-              keyboardType: TextInputType.numberWithOptions(),
-              inputFormatters: [DateMask()],
+            Stack(
+              children: [
+                TextField(
+                  controller: _editingController,
+                  onChanged: (text) {
+                    setState(() {});
+                  },
+                  keyboardType: TextInputType.numberWithOptions(),
+                  inputFormatters: [DateMask()],
+                  decoration: InputDecoration(
+                    hintText: 'dd/mm/yyyy',
+                    hintStyle: _hintTextStyle,
+                  ),
+                  style: _inputTextStyle,
+                ),
+                Positioned(
+                  left:
+                      boundingTextSize(
+                        _editingController.text,
+                        _inputTextStyle,
+                      ).width,
+                  top: 12,
+                  child: Visibility(
+                    visible: _editingController.text.isNotEmpty,
+                    child: Text('/mm/yyyy', style: _hintTextStyle),
+                  ),
+                ),
+              ],
             ),
             const Text('You have pushed the button this many times:'),
             Text(
@@ -68,5 +104,22 @@ class _MyHomePageState extends State<MyHomePage> {
         child: const Icon(Icons.add),
       ),
     );
+  }
+
+  static Size boundingTextSize(
+    String text,
+    TextStyle style, {
+    int maxLines = 2 ^ 31,
+    double maxWidth = double.infinity,
+  }) {
+    if (text.isEmpty) {
+      return Size.zero;
+    }
+    final TextPainter textPainter = TextPainter(
+      textDirection: TextDirection.ltr,
+      text: TextSpan(text: text, style: style),
+      maxLines: maxLines,
+    )..layout(maxWidth: maxWidth);
+    return textPainter.size;
   }
 }
