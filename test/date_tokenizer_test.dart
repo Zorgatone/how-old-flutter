@@ -1,8 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:how_old/date_mask.dart';
+import 'package:how_old/date_tokenizer.dart';
 
 void main() {
-  test("isSpace", () {
+  test('isSpace', () {
     expect(true, isSpace(' '.runes.first));
     expect(false, isSpace('\t'.runes.first));
     expect(false, isSpace('\r'.runes.first));
@@ -16,7 +16,7 @@ void main() {
     expect(false, isSpace('.'.runes.first));
     expect(false, isSpace(','.runes.first));
     expect(false, isSpace(';'.runes.first));
-    expect(false, isSpace('\''.runes.first));
+    expect(false, isSpace("'".runes.first));
     expect(false, isSpace('"'.runes.first));
     expect(false, isSpace('_'.runes.first));
     expect(false, isSpace('='.runes.first));
@@ -29,7 +29,7 @@ void main() {
     expect(false, isSpace('?'.runes.first));
     expect(false, isSpace('@'.runes.first));
     expect(false, isSpace('#'.runes.first));
-    expect(false, isSpace('\$'.runes.first));
+    expect(false, isSpace(r'$'.runes.first));
     expect(false, isSpace('%'.runes.first));
     expect(false, isSpace('^'.runes.first));
     expect(false, isSpace('&'.runes.first));
@@ -40,7 +40,7 @@ void main() {
     expect(false, isSpace('~'.runes.first));
   });
 
-  test("isDigit", () {
+  test('isDigit', () {
     expect(true, isDigit('0'.runes.first));
     expect(true, isDigit('1'.runes.first));
     expect(true, isDigit('2'.runes.first));
@@ -62,7 +62,7 @@ void main() {
     expect(false, isDigit('.'.runes.first));
     expect(false, isDigit(','.runes.first));
     expect(false, isDigit(';'.runes.first));
-    expect(false, isDigit('\''.runes.first));
+    expect(false, isDigit("'".runes.first));
     expect(false, isDigit('"'.runes.first));
     expect(false, isDigit('_'.runes.first));
     expect(false, isDigit('='.runes.first));
@@ -75,7 +75,7 @@ void main() {
     expect(false, isDigit('?'.runes.first));
     expect(false, isDigit('@'.runes.first));
     expect(false, isDigit('#'.runes.first));
-    expect(false, isDigit('\$'.runes.first));
+    expect(false, isDigit(r'$'.runes.first));
     expect(false, isDigit('%'.runes.first));
     expect(false, isDigit('^'.runes.first));
     expect(false, isDigit('&'.runes.first));
@@ -86,7 +86,7 @@ void main() {
     expect(false, isDigit('~'.runes.first));
   });
 
-  test("isSeparator", () {
+  test('isSeparator', () {
     expect(true, isSeparator('-'.runes.first));
     expect(true, isSeparator('/'.runes.first));
     expect(true, isSeparator('.'.runes.first));
@@ -100,7 +100,7 @@ void main() {
     expect(false, isSeparator('1'.runes.first));
     expect(false, isSeparator(','.runes.first));
     expect(false, isSeparator(';'.runes.first));
-    expect(false, isSeparator('\''.runes.first));
+    expect(false, isSeparator("'".runes.first));
     expect(false, isSeparator('"'.runes.first));
     expect(false, isSeparator('_'.runes.first));
     expect(false, isSeparator('='.runes.first));
@@ -113,7 +113,7 @@ void main() {
     expect(false, isSeparator('?'.runes.first));
     expect(false, isSeparator('@'.runes.first));
     expect(false, isSeparator('#'.runes.first));
-    expect(false, isSeparator('\$'.runes.first));
+    expect(false, isSeparator(r'$'.runes.first));
     expect(false, isSeparator('%'.runes.first));
     expect(false, isSeparator('^'.runes.first));
     expect(false, isSeparator('&'.runes.first));
@@ -131,9 +131,9 @@ void main() {
   });
 
   test('Date Tokenizer next', () {
-    const string1 = "01/01/1970";
-    const string2 = "31-12-1999";
-    const string3 = "12.12.2012";
+    const string1 = '01/01/1970';
+    const string2 = '31-12-1999';
+    const string3 = '12.12.2012';
     const expectedTokens = [
       Token(kind: TokenKind.number, start: 0, end: 2),
       Token(kind: TokenKind.separator, start: 2, end: 3),
@@ -141,9 +141,9 @@ void main() {
       Token(kind: TokenKind.separator, start: 5, end: 6),
       Token(kind: TokenKind.number, start: 6, end: 10),
     ];
-    const expectedSlices1 = ["01", "/", "01", "/", "1970"];
-    const expectedSlices2 = ["31", "-", "12", "-", "1999"];
-    const expectedSlices3 = ["12", ".", "12", ".", "2012"];
+    const expectedSlices1 = ['01', '/', '01', '/', '1970'];
+    const expectedSlices2 = ['31', '-', '12', '-', '1999'];
+    const expectedSlices3 = ['12', '.', '12', '.', '2012'];
     final tokenizer1 = Tokenizer();
     final tokenizer2 = Tokenizer();
     final tokenizer3 = Tokenizer();
@@ -173,7 +173,7 @@ void main() {
       i++;
     }
 
-    const string4 = " 1 3 - "; // invalid syntax (digits separated by space)
+    const string4 = ' 1 3 - '; // invalid syntax (digits separated by space)
     final tokenizer4 = Tokenizer();
 
     var actualToken4 = tokenizer4.next(string4);
@@ -218,7 +218,7 @@ void main() {
   });
 
   test('Date Tokenizer peek', () {
-    const string = "1-1-2000";
+    const string = '1-1-2000';
     var tokenizer = Tokenizer();
 
     var actualToken = tokenizer.peek(string);
