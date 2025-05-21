@@ -68,7 +68,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   onChanged: (text) {
                     setState(() {});
                   },
-                  keyboardType: TextInputType.numberWithOptions(),
+                  keyboardType: const TextInputType.numberWithOptions(),
                   inputFormatters: [DateMask()],
                   decoration: InputDecoration(
                     hintText: 'dd/mm/yyyy',
