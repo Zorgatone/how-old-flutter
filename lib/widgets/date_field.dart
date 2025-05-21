@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:how_old/date_mask.dart';
 
@@ -43,11 +45,13 @@ class _DateFieldState extends State<DateField> {
         Positioned(
           left:
               _boundingTextSize(_editingController.text, _inputTextStyle).width,
-          top: 12,
+          top: 12.5,
           child: Visibility(
             visible: _editingController.text.isNotEmpty,
             child: Text(
-              dateFormatHint.substring(_editingController.text.length),
+              _editingController.text.length >= dateFormatHint.length
+                  ? ''
+                  : dateFormatHint.substring(_editingController.text.length),
               style: _hintTextStyle,
             ),
           ),

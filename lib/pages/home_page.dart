@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:how_old/constants.dart';
 import 'package:how_old/widgets/date_field.dart';
 
 class HomePage extends StatelessWidget {
@@ -9,12 +10,14 @@ class HomePage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: const Text('HowOld?'),
+        title: const Text(appName),
       ),
-      body: const Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[DateField()],
+      body: const SafeArea(
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[SizedBox(width: 200, child: DateField())],
+          ),
         ),
       ),
     );

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:how_old/constants.dart';
 import 'package:how_old/pages/home_page.dart';
 
 void main() {
@@ -12,7 +13,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'HowOld?',
+      title: appName,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
