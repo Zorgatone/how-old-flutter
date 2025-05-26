@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:how_old/date_mask.dart';
 
@@ -15,7 +13,9 @@ const _inputTextStyle = TextStyle(
 const dateFormatHint = 'dd/mm/yyyy';
 
 class DateField extends StatefulWidget {
-  const DateField({super.key});
+  const DateField({super.key, this.labelText});
+
+  final String? labelText;
 
   @override
   State<StatefulWidget> createState() => _DateFieldState();
@@ -24,30 +24,59 @@ class DateField extends StatefulWidget {
 class _DateFieldState extends State<DateField> {
   final _editingController = TextEditingController();
   final _hintTextStyle = _inputTextStyle.copyWith(color: Colors.black45);
+  final _focusNode = FocusNode();
+
+  var isValid = true;
+  var isFocused = false;
+  var textValue = '';
+
+  @override
+  void initState() {
+    super.initState();
+
+    _focusNode.addListener(() {
+      setState(() {
+        isFocused = _focusNode.hasFocus;
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
+    final regexp = RegExp(r'\d{2}/\d{2}/\d{4,}'); // TODO: check this
+    isValid = textValue.isEmpty || regexp.hasMatch(textValue);
+
+    final labelText = widget.labelText;
+
     return Stack(
       children: [
         TextField(
           controller: _editingController,
+          focusNode: _focusNode,
           onChanged: (text) {
-            setState(() {});
+            setState(() {
+              textValue = text;
+            });
           },
           keyboardType: const TextInputType.numberWithOptions(),
           inputFormatters: [DateMask()],
           decoration: InputDecoration(
+            labelText: labelText,
             hintText: dateFormatHint,
             hintStyle: _hintTextStyle,
+            errorText: isValid ? null : 'Invalid date',
           ),
           style: _inputTextStyle,
         ),
-        Positioned(
-          left:
-              _boundingTextSize(_editingController.text, _inputTextStyle).width,
-          top: 12.5,
-          child: Visibility(
-            visible: _editingController.text.isNotEmpty,
+        Visibility(
+          visible: !isValid && _editingController.text.isNotEmpty && isFocused,
+          child: Positioned(
+            left:
+                _boundingTextSize(
+                  _editingController.text,
+                  _inputTextStyle,
+                ).width,
+            top: labelText != null && labelText.isNotEmpty ? 24 : 12.5,
             child: Text(
               _editingController.text.length >= dateFormatHint.length
                   ? ''
@@ -58,6 +87,15 @@ class _DateFieldState extends State<DateField> {
         ),
       ],
     );
+
+    // ignore: dead_code
+    @override
+    // ignore: unused_element
+    void dispose() {
+      _editingController.dispose();
+      _focusNode.dispose();
+      super.dispose();
+    }
   }
 
   static Size _boundingTextSize(

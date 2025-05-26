@@ -129,9 +129,9 @@ void main() {
   group('Token class', () {
     test('GetSubstring method', () {
       const string = '10/12/2021';
-      final token = Token(kind: TokenKind.number, start: 3, end: 5);
+      const token = Token(kind: TokenKind.number, start: 3, end: 5);
 
-      expect("12", token.getSubstring(string));
+      expect('12', token.getSubstring(string));
     });
   });
 

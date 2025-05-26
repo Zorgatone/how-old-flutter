@@ -16,7 +16,10 @@ class HomePage extends StatelessWidget {
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[SizedBox(width: 200, child: DateField())],
+            children: <Widget>[
+              SizedBox(width: 200, child: DateField(labelText: 'Start date')),
+              SizedBox(width: 200, child: DateField(labelText: 'End date')),
+            ],
           ),
         ),
       ),

@@ -6,6 +6,7 @@ class DateMask extends TextInputFormatter {
     TextEditingValue oldValue,
     TextEditingValue newValue,
   ) {
+    // TODO: automatically fix input text
     return newValue;
   }
 }
