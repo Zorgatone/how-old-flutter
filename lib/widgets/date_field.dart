@@ -58,6 +58,9 @@ class _DateFieldState extends State<DateField> {
               textValue = text;
             });
           },
+          onTapOutside: (event) {
+            FocusManager.instance.primaryFocus?.unfocus();
+          },
           keyboardType: const TextInputType.numberWithOptions(),
           inputFormatters: [DateMask()],
           decoration: InputDecoration(
