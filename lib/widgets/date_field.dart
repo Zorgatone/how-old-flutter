@@ -43,7 +43,7 @@ class _DateFieldState extends State<DateField> {
 
   @override
   Widget build(BuildContext context) {
-    final regexp = RegExp(r'\d{2}/\d{2}/\d{4,}'); // TODO: check this
+    final regexp = RegExp(r'^\d{2}/\d{2}/\d{4,}$'); // TODO: check this
     isValid = textValue.isEmpty || regexp.hasMatch(textValue);
 
     final labelText = widget.labelText;
@@ -61,6 +61,8 @@ class _DateFieldState extends State<DateField> {
           onTapOutside: (event) {
             FocusManager.instance.primaryFocus?.unfocus();
           },
+          // enableInteractiveSelection: false,
+          // contextMenuBuilder: null,
           keyboardType: const TextInputType.numberWithOptions(),
           inputFormatters: [DateMask()],
           decoration: InputDecoration(
