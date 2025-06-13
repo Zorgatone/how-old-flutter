@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:how_old/constants.dart';
 import 'package:how_old/date_mask.dart';
 
 const _inputTextStyle = TextStyle(
@@ -43,7 +44,7 @@ class _DateFieldState extends State<DateField> {
 
   @override
   Widget build(BuildContext context) {
-    final regexp = RegExp(r'^\d{2}/\d{2}/\d{4,}$'); // TODO: check this
+    final regexp = RegExp(validDateRegexp);
     isValid = regexp.hasMatch(textValue);
 
     final labelText = widget.labelText;

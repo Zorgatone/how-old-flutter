@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart' show visibleForTesting; //, debugPrint;
 import 'package:flutter/services.dart'
     show TextInputFormatter, TextEditingValue, TextSelection, TextRange;
+import 'package:how_old/constants.dart';
 import 'package:how_old/date_tokenizer.dart';
 import 'package:how_old/utils/clip_text_value.dart';
 
@@ -40,7 +41,7 @@ class DateMask extends TextInputFormatter {
     }
 
     // NOTE: can only paste valid dates
-    if (RegExp(r'^\d{2}/\d{2}/\d{4,}$').hasMatch(newText)) {
+    if (RegExp(validDateRegexp).hasMatch(newText)) {
       return newValue; // keep as-is
     }
 
@@ -111,7 +112,7 @@ class DateMask extends TextInputFormatter {
     newValue = parseSeparator(newValue);
 
     newValue = skipAnySpaces(newValue);
-    newValue = parseDay(newValue);
+    newValue = parseYear(newValue);
 
     newValue = skipAnySpaces(newValue);
 
@@ -138,7 +139,17 @@ class DateMask extends TextInputFormatter {
 
   @visibleForTesting
   TextEditingValue parseDay(TextEditingValue newValue) {
-    final token = tokenizer.next(newValue.text);
+    return parseDigits(newValue, limit: 2);
+  }
+
+  @visibleForTesting
+  TextEditingValue parseYear(TextEditingValue newValue) {
+    return parseDigits(newValue, limit: 4);
+  }
+
+  @visibleForTesting
+  TextEditingValue parseDigits(TextEditingValue newValue, {int? limit}) {
+    var token = tokenizer.next(newValue.text);
 
     if (token.kind == TokenKind.eof) {
       return newValue;
@@ -146,6 +157,17 @@ class DateMask extends TextInputFormatter {
 
     if (token.kind != TokenKind.number) {
       throw InvalidTokenException(token: token);
+    }
+
+    var len = token.end - token.start;
+    if (limit != null && len > limit) {
+      final newPosition = token.start + limit;
+
+      tokenizer.idx = newPosition;
+
+      newValue = clipTextValue(newValue, newPosition);
+
+      return newValue;
     }
 
     return newValue;

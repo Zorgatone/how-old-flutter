@@ -27,17 +27,17 @@ void main() {
         var oldValue = const TextEditingValue(text: '');
         var newValue = const TextEditingValue(text: '1');
 
-        expect(newValue, mask.formatEditUpdate(oldValue, newValue));
+        expect(mask.formatEditUpdate(oldValue, newValue), newValue);
 
         oldValue = const TextEditingValue(text: '10/07/19'); // incomplete
         newValue = const TextEditingValue(text: '10/07/199'); // incomplete
 
-        expect(newValue, mask.formatEditUpdate(oldValue, newValue));
+        expect(mask.formatEditUpdate(oldValue, newValue), newValue);
 
         oldValue = const TextEditingValue(text: '10/07');
         newValue = const TextEditingValue(text: '10/07/');
 
-        expect(newValue, mask.formatEditUpdate(oldValue, newValue));
+        expect(mask.formatEditUpdate(oldValue, newValue), newValue);
       });
 
       test('can remove single character at end of input', () {
