@@ -13,8 +13,6 @@ class InvalidTokenException implements Exception {
           'Invalid token: "${token.kind}" from position ${token.start} to position ${token.end}!';
 }
 
-// TODO: remove calls to debugPrint and StopWatch
-
 class DateMask extends TextInputFormatter {
   final tokenizer = Tokenizer();
   // final watch = Stopwatch();
@@ -27,64 +25,75 @@ class DateMask extends TextInputFormatter {
     // watch.reset();
     // watch.start();
 
-    try {
-      final newText = newValue.text;
+    // try {
+    final newText = newValue.text;
+    final oldText = oldValue.text;
 
-      // Tex content didn't change
-      if (oldValue.text == newText) {
-        return newValue;
-      }
-
-      // NOTE: can only paste valid dates
-      if (RegExp(r'^\d{2}/\d{2}/\d{4,}$').hasMatch(newText)) {
-        return newValue; // keep as-is
-      }
-
-      // Can only change 1 character at a time
-      if ((oldValue.text.length - newText.length).abs() > 1) {
-        return oldValue;
-      }
-
-      try {
-        tokenizer.idx = 0;
-        final parsed = parseDate(newValue);
-
-        // debugPrint('returned parsed text: "${parsed.text}"');
-        return parsed;
-      } on InvalidTokenException catch (exception) {
-        // debugPrint('old: "${oldValue.text}" new: "$newText"');
-        if (exception.token.end == newText.length - 1) {
-          // if (exception.token.start >= newText.length) {
-          //   debugPrint(
-          //     'token.start ${exception.token.start} is greater the text.length ${newText.length}',
-          //   );
-          // }
-
-          final result = TextEditingValue(
-            text: newValue.text.substring(0, exception.token.start),
-            // selection: newValue.selection.baseOffset < 0 ? newValue.selection :
-            //   newValue.selection.copyWith(
-            //     baseOffset: newValue.selection.baseOffset
-            //   )
-            // TODO: handle selection
-            selection: const TextSelection.collapsed(offset: -1),
-            // TODO: handle composing
-            composing: TextRange.empty,
-          );
-
-          // debugPrint('returned modified new text: "${result.text}"');
-          return result;
-        }
-      }
-
-      // debugPrint('returned old text: "${oldValue.text}"');
-      return oldValue;
-    } finally {
-      // watch.stop();
-      // debugPrint(
-      //   'DateMask.formatEditUpdate executed in ${watch.elapsedMicroseconds} microseconds  ',
-      // );
+    // Text content didn't change
+    if (oldText == newText) {
+      return newValue;
     }
+
+    // clear field
+    if (oldText.isNotEmpty && newText.isEmpty) {
+      return newValue;
+    }
+
+    // NOTE: can only paste valid dates
+    if (RegExp(r'^\d{2}/\d{2}/\d{4,}$').hasMatch(newText)) {
+      return newValue; // keep as-is
+    }
+
+    // Can only change 1 character at a time
+    if ((oldText.length - newText.length).abs() > 1) {
+      return oldValue;
+    }
+
+    if (newText.length < oldText.length &&
+        oldText.substring(0, newText.length) != newText) {
+      return oldValue;
+    }
+
+    try {
+      tokenizer.idx = 0;
+      final parsed = parseDate(newValue);
+
+      // debugPrint('returned parsed text: "${parsed.text}"');
+      return parsed;
+    } on InvalidTokenException catch (exception) {
+      // debugPrint('old: "${oldValue.text}" new: "$newText"');
+      if (exception.token.end == newText.length - 1) {
+        // if (exception.token.start >= newText.length) {
+        //   debugPrint(
+        //     'token.start ${exception.token.start} is greater the text.length ${newText.length}',
+        //   );
+        // }
+
+        final result = TextEditingValue(
+          text: newValue.text.substring(0, exception.token.start),
+          // selection: newValue.selection.baseOffset < 0 ? newValue.selection :
+          //   newValue.selection.copyWith(
+          //     baseOffset: newValue.selection.baseOffset
+          //   )
+          // TODO: handle selection
+          selection: const TextSelection.collapsed(offset: -1),
+          // TODO: handle composing
+          composing: TextRange.empty,
+        );
+
+        // debugPrint('returned modified new text: "${result.text}"');
+        return result;
+      }
+    }
+
+    // debugPrint('returned old text: "${oldValue.text}"');
+    return oldValue;
+    // } finally {
+    //   watch.stop();
+    //   debugPrint(
+    //     'DateMask.formatEditUpdate executed in ${watch.elapsedMicroseconds} microseconds  ',
+    //   );
+    // }
   }
 
   @visibleForTesting
