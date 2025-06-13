@@ -44,8 +44,8 @@ class DateMask extends TextInputFormatter {
       return newValue; // keep as-is
     }
 
-    // Can only change 1 character at a time
-    if ((oldText.length - newText.length).abs() > 1) {
+    // Can only change 1 character (rune) at a time
+    if ((oldText.runes.length - newText.runes.length).abs() > 1) {
       return oldValue;
     }
 
@@ -62,7 +62,7 @@ class DateMask extends TextInputFormatter {
       return parsed;
     } on InvalidTokenException catch (exception) {
       // debugPrint('old: "${oldValue.text}" new: "$newText"');
-      if (exception.token.end == newText.length - 1) {
+      if (exception.token.end == newText.runes.indexed.last.$1) {
         // if (exception.token.start >= newText.length) {
         //   debugPrint(
         //     'token.start ${exception.token.start} is greater the text.length ${newText.length}',
