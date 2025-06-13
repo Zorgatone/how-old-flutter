@@ -234,6 +234,15 @@ void main() {
       expect(0, actualToken4.end);
     });
 
+    test('collapse spaces', () {
+      const expected = Token(kind: TokenKind.space, start: 0, end: 2);
+      final actual = Tokenizer().next('  ');
+
+      expect(actual.kind, expected.kind);
+      expect(actual.start, expected.start);
+      expect(actual.end, expected.end);
+    });
+
     test('Peek method', () {
       const string = '1-1-2000';
       var tokenizer = Tokenizer();

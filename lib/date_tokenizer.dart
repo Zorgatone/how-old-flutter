@@ -53,23 +53,24 @@ class Tokenizer {
 
     var start = iterator.rawIndex;
 
-    // Skip any starting space
-    while (isSpace(iterator.current)) {
-      idx = iterator.rawIndex + iterator.currentSize;
-      if (!iterator.moveNext()) {
-        return Token(kind: TokenKind.space, start: start, end: idx);
-      }
+    if (isSpace(iterator.current)) {
+      do {
+        idx = iterator.rawIndex + iterator.currentSize;
+        if (!iterator.moveNext()) {
+          return Token(kind: TokenKind.space, start: start, end: idx);
+        }
+      } while (isSpace(iterator.current));
 
       return Token(kind: TokenKind.space, start: start, end: idx);
     }
 
     if (isDigit(iterator.current)) {
-      while (isDigit(iterator.current)) {
+      do {
         idx = iterator.rawIndex + iterator.currentSize;
         if (!iterator.moveNext()) {
           return Token(kind: TokenKind.number, start: start, end: idx);
         }
-      }
+      } while (isDigit(iterator.current));
 
       return Token(kind: TokenKind.number, start: start, end: idx);
     }
