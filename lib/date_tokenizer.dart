@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+
 enum TokenKind { space, separator, number, invalid, eof }
 
 class Token {
@@ -12,16 +14,22 @@ class Token {
   }
 }
 
+/// Returns true if the given code unit represents a space character.
+@visibleForTesting
 bool isSpace(int codeUnit) {
   return codeUnit == 0x20;
 }
 
+/// Returns true if the given code unit represents a digit character [0-9].
+@visibleForTesting
 bool isDigit(int codeUnit) {
   return 0x30 <= codeUnit && codeUnit <= 0x39;
 }
 
+/// Returns true if the given code unit represents a separator character [.-/].
+@visibleForTesting
 bool isSeparator(int codeUnit) {
-  return 0x2F == codeUnit || 0x2D == codeUnit || 0x2E == codeUnit;
+  return 0x2D <= codeUnit && codeUnit <= 0x2F;
 }
 
 class Tokenizer {

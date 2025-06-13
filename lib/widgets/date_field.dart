@@ -18,7 +18,7 @@ class DateField extends StatefulWidget {
   final String? labelText;
 
   @override
-  State<StatefulWidget> createState() => _DateFieldState();
+  State<DateField> createState() => _DateFieldState();
 }
 
 class _DateFieldState extends State<DateField> {
@@ -44,7 +44,7 @@ class _DateFieldState extends State<DateField> {
   @override
   Widget build(BuildContext context) {
     final regexp = RegExp(r'^\d{2}/\d{2}/\d{4,}$'); // TODO: check this
-    isValid = textValue.isEmpty || regexp.hasMatch(textValue);
+    isValid = regexp.hasMatch(textValue);
 
     final labelText = widget.labelText;
 
@@ -67,14 +67,15 @@ class _DateFieldState extends State<DateField> {
           inputFormatters: [DateMask()],
           decoration: InputDecoration(
             labelText: labelText,
-            hintText: dateFormatHint,
+            // hintText: dateFormatHint,
             hintStyle: _hintTextStyle,
-            errorText: isValid ? null : 'Invalid date',
+            errorText: isValid || textValue.isEmpty ? null : 'Invalid date',
           ),
           style: _inputTextStyle,
         ),
         Visibility(
-          visible: !isValid && _editingController.text.isNotEmpty && isFocused,
+          // visible: !isValid && textValue.isNotEmpty && isFocused,
+          visible: !isValid && isFocused,
           child: Positioned(
             left:
                 _boundingTextSize(

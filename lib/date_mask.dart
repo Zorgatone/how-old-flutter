@@ -1,4 +1,4 @@
-import 'package:flutter/foundation.dart' show visibleForTesting, debugPrint;
+import 'package:flutter/foundation.dart' show visibleForTesting; //, debugPrint;
 import 'package:flutter/services.dart'
     show TextInputFormatter, TextEditingValue, TextSelection, TextRange;
 import 'package:how_old/date_tokenizer.dart';
@@ -17,15 +17,15 @@ class InvalidTokenException implements Exception {
 
 class DateMask extends TextInputFormatter {
   final tokenizer = Tokenizer();
-  final watch = Stopwatch();
+  // final watch = Stopwatch();
 
   @override
   TextEditingValue formatEditUpdate(
     TextEditingValue oldValue,
     TextEditingValue newValue,
   ) {
-    watch.reset();
-    watch.start();
+    // watch.reset();
+    // watch.start();
 
     try {
       final newText = newValue.text;
@@ -49,16 +49,16 @@ class DateMask extends TextInputFormatter {
         tokenizer.idx = 0;
         final parsed = parseDate(newValue);
 
-        debugPrint('returned parsed text: "${parsed.text}"');
+        // debugPrint('returned parsed text: "${parsed.text}"');
         return parsed;
       } on InvalidTokenException catch (exception) {
-        debugPrint('old: "${oldValue.text}" new: "$newText"');
+        // debugPrint('old: "${oldValue.text}" new: "$newText"');
         if (exception.token.end == newText.length - 1) {
-          if (exception.token.start >= newText.length) {
-            debugPrint(
-              'token.start ${exception.token.start} is greater the text.length ${newText.length}',
-            );
-          }
+          // if (exception.token.start >= newText.length) {
+          //   debugPrint(
+          //     'token.start ${exception.token.start} is greater the text.length ${newText.length}',
+          //   );
+          // }
 
           final result = TextEditingValue(
             text: newValue.text.substring(0, exception.token.start),
@@ -72,18 +72,18 @@ class DateMask extends TextInputFormatter {
             composing: TextRange.empty,
           );
 
-          debugPrint('returned modified new text: "${result.text}"');
+          // debugPrint('returned modified new text: "${result.text}"');
           return result;
         }
       }
 
-      debugPrint('returned old text: "${oldValue.text}"');
+      // debugPrint('returned old text: "${oldValue.text}"');
       return oldValue;
     } finally {
-      watch.stop();
-      debugPrint(
-        'DateMask.formatEditUpdate executed in ${watch.elapsedMicroseconds} microseconds  ',
-      );
+      // watch.stop();
+      // debugPrint(
+      //   'DateMask.formatEditUpdate executed in ${watch.elapsedMicroseconds} microseconds  ',
+      // );
     }
   }
 
