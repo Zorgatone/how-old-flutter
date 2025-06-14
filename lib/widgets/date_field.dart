@@ -94,15 +94,13 @@ class _DateFieldState extends State<DateField> {
         ),
       ],
     );
+  }
 
-    // ignore: dead_code
-    @override
-    // ignore: unused_element
-    void dispose() {
-      _editingController.dispose();
-      _focusNode.dispose();
-      super.dispose();
-    }
+  @override
+  void dispose() {
+    _editingController.dispose();
+    _focusNode.dispose();
+    super.dispose();
   }
 
   static Size _boundingTextSize(
