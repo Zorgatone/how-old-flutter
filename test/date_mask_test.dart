@@ -148,9 +148,53 @@ void main() {
 
         oldValue = const TextEditingValue(text: '28/0');
         newValue = const TextEditingValue(text: '28/02');
-        finalValue = const TextEditingValue(text: '28/02/'); // incomplete
+        finalValue = const TextEditingValue(text: '28/02/');
 
         expect(mask.formatEditUpdate(oldValue, newValue), finalValue);
+      });
+
+      test('large initial day digit should skip to month', () {
+        final mask = DateMask();
+
+        const oldValue = TextEditingValue(text: '');
+        const values = ['4', '5', '6', '7', '8', '9'];
+        final newValues =
+            values.map((text) => TextEditingValue(text: text)).toList();
+        final finalValues =
+            values.map((text) => TextEditingValue(text: '0$text/')).toList();
+
+        final len = values.length;
+        for (var i = 0; i < len; i++) {
+          final newValue = newValues[i];
+          final finalValue = finalValues[i];
+
+          expect(mask.formatEditUpdate(oldValue, newValue), finalValue);
+        }
+      });
+
+      test('large initial month digit should skip to year', () {
+        final mask = DateMask();
+
+        const oldValue = TextEditingValue(text: '28/');
+        const values = ['2', '3', '4', '5', '6', '7', '8', '9'];
+        final newValues =
+            values
+                .map((text) => TextEditingValue(text: '${oldValue.text}$text'))
+                .toList();
+        final finalValues =
+            values
+                .map(
+                  (text) => TextEditingValue(text: '${oldValue.text}0$text/'),
+                )
+                .toList();
+
+        final len = values.length;
+        for (var i = 0; i < len; i++) {
+          final newValue = newValues[i];
+          final finalValue = finalValues[i];
+
+          expect(mask.formatEditUpdate(oldValue, newValue), finalValue);
+        }
       });
     });
   });

@@ -154,6 +154,27 @@ class DateMask extends TextInputFormatter {
   @visibleForTesting
   TextEditingValue parseDay(TextEditingValue newValue) {
     final token = parseDigits(newValue, limit: 2);
+    assert(token.start == 0);
+
+    var len = token.end - token.start;
+
+    if (len == 1 && token.end == newValue.text.length) {
+      var num = int.parse(newValue.text.substring(token.start, token.end));
+      assert(num < 10);
+
+      if (num > 3) {
+        newValue = insertTextValue(newValue, index: token.start, text: '0');
+        newValue = insertTextValue(
+          newValue,
+          index: newValue.text.length,
+          text: separator,
+        );
+
+        tokenizer.idx = newValue.text.length;
+
+        return newValue;
+      }
+    }
 
     return addSeparatorToEnd(newValue, token: token, requiredLength: 2);
   }
@@ -161,6 +182,25 @@ class DateMask extends TextInputFormatter {
   @visibleForTesting
   TextEditingValue parseMonth(TextEditingValue newValue) {
     final token = parseDigits(newValue, limit: 2);
+    var len = token.end - token.start;
+
+    if (len == 1 && token.end == newValue.text.length) {
+      var num = int.parse(newValue.text.substring(token.start, token.end));
+      assert(num < 10);
+
+      if (num > 1) {
+        newValue = insertTextValue(newValue, index: token.start, text: '0');
+        newValue = insertTextValue(
+          newValue,
+          index: newValue.text.length,
+          text: separator,
+        );
+
+        tokenizer.idx = newValue.text.length;
+
+        return newValue;
+      }
+    }
 
     return addSeparatorToEnd(newValue, token: token, requiredLength: 2);
   }
