@@ -7,22 +7,22 @@ void main() {
       test(
         'fall back to old value with invalid characters at the end of input',
         () {
-          var mask = DateMask();
+          final mask = DateMask();
 
           var oldValue = const TextEditingValue(text: '');
           var newValue = const TextEditingValue(text: 'b');
 
-          expect(oldValue, mask.formatEditUpdate(oldValue, newValue));
+          expect(mask.formatEditUpdate(oldValue, newValue), oldValue);
 
           oldValue = const TextEditingValue(text: '10');
           newValue = const TextEditingValue(text: '10b');
 
-          expect(oldValue, mask.formatEditUpdate(oldValue, newValue));
+          expect(mask.formatEditUpdate(oldValue, newValue), oldValue);
         },
       );
 
       test('can add single valid character at end of input', () {
-        var mask = DateMask();
+        final mask = DateMask();
 
         var oldValue = const TextEditingValue(text: '');
         var newValue = const TextEditingValue(text: '1');
@@ -41,7 +41,7 @@ void main() {
       });
 
       test('can remove single character at end of input', () {
-        var mask = DateMask();
+        final mask = DateMask();
 
         var oldValue = const TextEditingValue(text: '1');
         var newValue = const TextEditingValue(text: '');
@@ -60,7 +60,7 @@ void main() {
       });
 
       test('cannot remove characters not at the end of input', () {
-        var mask = DateMask();
+        final mask = DateMask();
 
         var oldValue = const TextEditingValue(text: '10/07/199'); // incomplete
         var newValue = const TextEditingValue(text: '0/07/199'); // incomplete
@@ -79,33 +79,33 @@ void main() {
       });
 
       test('can clear value', () {
-        var mask = DateMask();
+        final mask = DateMask();
 
         var oldValue = const TextEditingValue(text: '10/07/1992'); // complete
         const newValue = TextEditingValue(text: '');
 
-        expect(newValue, mask.formatEditUpdate(oldValue, newValue));
+        expect(mask.formatEditUpdate(oldValue, newValue), newValue);
 
         oldValue = const TextEditingValue(text: '10/07/'); // incomplete
 
-        expect(newValue, mask.formatEditUpdate(oldValue, newValue));
+        expect(mask.formatEditUpdate(oldValue, newValue), newValue);
       });
 
       test('can paste valid date', () {
-        var mask = DateMask();
+        final mask = DateMask();
 
         var oldValue = const TextEditingValue(text: '');
         const newValue = TextEditingValue(text: '10/07/1992'); // complete
 
-        expect(newValue, mask.formatEditUpdate(oldValue, newValue));
+        expect(mask.formatEditUpdate(oldValue, newValue), newValue);
 
         oldValue = const TextEditingValue(text: '10/07/');
 
-        expect(newValue, mask.formatEditUpdate(oldValue, newValue));
+        expect(mask.formatEditUpdate(oldValue, newValue), newValue);
       });
 
       test('reject multiple characters change', () {
-        var mask = DateMask();
+        final mask = DateMask();
 
         const oldValue = TextEditingValue(text: '10/07/');
         var newValue = const TextEditingValue(text: '10/07/199'); // incomplete
@@ -116,6 +116,16 @@ void main() {
 
         expect(mask.formatEditUpdate(oldValue, newValue), oldValue);
       });
+
+      // test('three numbers should move from day to month', () {
+      //   final mask = DateMask();
+
+      //   const oldValue = TextEditingValue(text: '31');
+      //   const newValue = TextEditingValue(text: '311');
+      //   const finalValue = TextEditingValue(text: '31/1');
+
+      //   expect(mask.formatEditUpdate(oldValue, newValue), finalValue);
+      // });
     });
   });
 }

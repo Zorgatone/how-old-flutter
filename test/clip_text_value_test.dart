@@ -7,21 +7,21 @@ void main() {
       const initial = TextEditingValue(text: 'My example text');
       final modified = clipTextValue(initial, 0, 3);
 
-      expect('example text', modified.text);
+      expect(modified.text, 'example text');
     });
 
     test('remove text in the middle', () {
       const initial = TextEditingValue(text: 'My example text');
       final modified = clipTextValue(initial, 3, 11);
 
-      expect('My text', modified.text);
+      expect(modified.text, 'My text');
     });
 
     test('remove text at the end', () {
       const initial = TextEditingValue(text: 'My example text');
       final modified = clipTextValue(initial, 10);
 
-      expect('My example', modified.text);
+      expect(modified.text, 'My example');
     });
   });
 }
