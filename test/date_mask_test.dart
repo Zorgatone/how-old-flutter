@@ -136,6 +136,22 @@ void main() {
 
         expect(mask.formatEditUpdate(oldValue, newValue), finalValue);
       });
+
+      test('two numbers should automatically insert separator', () {
+        final mask = DateMask();
+
+        var oldValue = const TextEditingValue(text: '3');
+        var newValue = const TextEditingValue(text: '31');
+        var finalValue = const TextEditingValue(text: '31/');
+
+        expect(mask.formatEditUpdate(oldValue, newValue), finalValue);
+
+        oldValue = const TextEditingValue(text: '28/0');
+        newValue = const TextEditingValue(text: '28/02');
+        finalValue = const TextEditingValue(text: '28/02/'); // incomplete
+
+        expect(mask.formatEditUpdate(oldValue, newValue), finalValue);
+      });
     });
   });
 }

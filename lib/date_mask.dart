@@ -51,9 +51,10 @@ class DateMask extends TextInputFormatter {
       return oldValue;
     }
 
-    if (newText.length < oldText.length &&
-        oldText.substring(0, newText.length) != newText) {
-      return oldValue;
+    if (newText.length < oldText.length) {
+      return oldText.substring(0, newText.length) == newText
+          ? newValue
+          : oldValue;
     }
 
     try {
@@ -152,25 +153,31 @@ class DateMask extends TextInputFormatter {
 
   @visibleForTesting
   TextEditingValue parseDay(TextEditingValue newValue) {
-    return parseDigits(newValue, limit: 2);
+    final token = parseDigits(newValue, limit: 2);
+
+    return addSeparatorToEnd(newValue, token: token, requiredLength: 2);
   }
 
   @visibleForTesting
   TextEditingValue parseMonth(TextEditingValue newValue) {
-    return parseDigits(newValue, limit: 2);
+    final token = parseDigits(newValue, limit: 2);
+
+    return addSeparatorToEnd(newValue, token: token, requiredLength: 2);
   }
 
   @visibleForTesting
   TextEditingValue parseYear(TextEditingValue newValue) {
-    return parseDigits(newValue, limit: 4);
+    parseDigits(newValue, limit: 4);
+
+    return newValue;
   }
 
   @visibleForTesting
-  TextEditingValue parseDigits(TextEditingValue newValue, {int? limit}) {
+  Token parseDigits(TextEditingValue newValue, {int? limit}) {
     var token = tokenizer.next(newValue.text);
 
     if (token.kind == TokenKind.eof) {
-      return newValue;
+      return token;
     }
 
     if (token.kind != TokenKind.number) {
@@ -183,10 +190,10 @@ class DateMask extends TextInputFormatter {
 
       tokenizer.idx = newPosition;
 
-      return newValue;
+      return token;
     }
 
-    return newValue;
+    return token;
   }
 
   @visibleForTesting
@@ -199,6 +206,40 @@ class DateMask extends TextInputFormatter {
 
     if (token.kind != TokenKind.separator) {
       throw InvalidTokenException(token: token);
+    }
+
+    return newValue;
+  }
+
+  @visibleForTesting
+  TextEditingValue addSeparatorToEnd(
+    TextEditingValue newValue, {
+    required Token token,
+    required int requiredLength,
+  }) {
+    assert(requiredLength == 2);
+    assert(token.kind == TokenKind.number || token.kind == TokenKind.eof);
+    assert(
+      token.kind == TokenKind.eof ||
+          (0 <= token.start && token.start < newValue.text.length),
+    );
+    assert(
+      token.kind == TokenKind.eof ||
+          (token.start < token.end && token.end <= newValue.text.length),
+    );
+
+    if (token.end < newValue.text.length) {
+      // don't add separator if we're not at the end of the input string
+      return newValue;
+    }
+
+    final len = token.end - token.start;
+    if (len == requiredLength) {
+      return insertTextValue(
+        newValue,
+        index: newValue.text.length,
+        text: separator,
+      );
     }
 
     return newValue;
