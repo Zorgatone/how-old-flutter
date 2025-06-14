@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:how_old/constants.dart';
-import 'package:how_old/date_mask.dart';
+import 'package:how_old/date_mask.dart' show DateMask;
+import 'package:intl/intl.dart' show DateFormat;
 
 const _inputTextStyle = TextStyle(
   fontFamily: 'RobotoMono',
@@ -12,26 +13,43 @@ const _inputTextStyle = TextStyle(
 );
 
 class DateField extends StatefulWidget {
-  const DateField({super.key, this.labelText});
+  const DateField({super.key, this.labelText, this.initialDate});
 
   final String? labelText;
+  final DateTime? initialDate;
 
   @override
   State<DateField> createState() => _DateFieldState();
 }
 
 class _DateFieldState extends State<DateField> {
-  final _editingController = TextEditingController();
-  final _hintTextStyle = _inputTextStyle.copyWith(color: Colors.black45);
-  final _focusNode = FocusNode();
+  final TextEditingController _editingController;
+  final TextStyle _hintTextStyle;
+  final FocusNode _focusNode;
 
-  var isValid = true;
-  var isFocused = false;
-  var textValue = '';
+  bool isValid;
+  bool isFocused;
+  String textValue;
+
+  _DateFieldState()
+    : textValue = '',
+      _editingController = TextEditingController(text: ''),
+      _hintTextStyle = _inputTextStyle.copyWith(color: Colors.black45),
+      _focusNode = FocusNode(),
+      isValid = true,
+      isFocused = false,
+      super();
 
   @override
   void initState() {
     super.initState();
+
+    final initialDate = widget.initialDate;
+    if (initialDate != null) {
+      final formatter = DateFormat('dd/MM/yyyy');
+      textValue = formatter.format(initialDate);
+      _editingController.text = textValue;
+    }
 
     _focusNode.addListener(() {
       setState(() {

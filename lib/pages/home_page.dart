@@ -12,13 +12,22 @@ class HomePage extends StatelessWidget {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: const Text(appName),
       ),
-      body: const SafeArea(
+      body: SafeArea(
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              SizedBox(width: 200, child: DateField(labelText: 'Start date')),
-              SizedBox(width: 200, child: DateField(labelText: 'End date')),
+              const SizedBox(
+                width: 200,
+                child: DateField(labelText: 'Start date'),
+              ),
+              SizedBox(
+                width: 200,
+                child: DateField(
+                  labelText: 'End date',
+                  initialDate: DateTime.now(),
+                ),
+              ),
             ],
           ),
         ),
