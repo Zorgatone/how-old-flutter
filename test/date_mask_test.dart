@@ -117,15 +117,25 @@ void main() {
         expect(mask.formatEditUpdate(oldValue, newValue), oldValue);
       });
 
-      // test('three numbers should move from day to month', () {
-      //   final mask = DateMask();
+      test('three numbers should move from day to month', () {
+        final mask = DateMask();
 
-      //   const oldValue = TextEditingValue(text: '31');
-      //   const newValue = TextEditingValue(text: '311');
-      //   const finalValue = TextEditingValue(text: '31/1');
+        const oldValue = TextEditingValue(text: '31');
+        const newValue = TextEditingValue(text: '311');
+        const finalValue = TextEditingValue(text: '31/1');
 
-      //   expect(mask.formatEditUpdate(oldValue, newValue), finalValue);
-      // });
+        expect(mask.formatEditUpdate(oldValue, newValue), finalValue);
+      });
+
+      test('three numbers should move from month to year', () {
+        final mask = DateMask();
+
+        const oldValue = TextEditingValue(text: '28/02');
+        const newValue = TextEditingValue(text: '28/021');
+        const finalValue = TextEditingValue(text: '28/02/1'); // incomplete
+
+        expect(mask.formatEditUpdate(oldValue, newValue), finalValue);
+      });
     });
   });
 }

@@ -11,8 +11,6 @@ const _inputTextStyle = TextStyle(
   color: Colors.black,
 );
 
-const dateFormatHint = 'dd/mm/yyyy';
-
 class DateField extends StatefulWidget {
   const DateField({super.key, this.labelText});
 
@@ -85,9 +83,9 @@ class _DateFieldState extends State<DateField> {
                 ).width,
             top: labelText != null && labelText.isNotEmpty ? 24 : 12.5,
             child: Text(
-              _editingController.text.length >= dateFormatHint.length
+              _editingController.text.length >= dateFormat.length
                   ? ''
-                  : dateFormatHint.substring(_editingController.text.length),
+                  : dateFormat.substring(_editingController.text.length),
               style: _hintTextStyle,
             ),
           ),

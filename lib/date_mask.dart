@@ -4,6 +4,7 @@ import 'package:flutter/services.dart'
 import 'package:how_old/constants.dart';
 import 'package:how_old/date_tokenizer.dart';
 import 'package:how_old/utils/clip_text_value.dart';
+import 'package:how_old/utils/insert_text_value.dart';
 
 class InvalidTokenException implements Exception {
   final String message;
@@ -102,11 +103,23 @@ class DateMask extends TextInputFormatter {
     newValue = skipAnySpaces(newValue);
     newValue = parseDay(newValue);
 
+    var token = tokenizer.peek(newValue.text);
+
+    if (token.kind == TokenKind.number && token.end == newValue.text.length) {
+      newValue = insertTextValue(newValue, index: token.start, text: separator);
+    }
+
     newValue = skipAnySpaces(newValue);
     newValue = parseSeparator(newValue);
 
     newValue = skipAnySpaces(newValue);
-    newValue = parseDay(newValue);
+    newValue = parseMonth(newValue);
+
+    token = tokenizer.peek(newValue.text);
+
+    if (token.kind == TokenKind.number && token.end == newValue.text.length) {
+      newValue = insertTextValue(newValue, index: token.start, text: separator);
+    }
 
     newValue = skipAnySpaces(newValue);
     newValue = parseSeparator(newValue);
@@ -143,6 +156,11 @@ class DateMask extends TextInputFormatter {
   }
 
   @visibleForTesting
+  TextEditingValue parseMonth(TextEditingValue newValue) {
+    return parseDigits(newValue, limit: 2);
+  }
+
+  @visibleForTesting
   TextEditingValue parseYear(TextEditingValue newValue) {
     return parseDigits(newValue, limit: 4);
   }
@@ -164,8 +182,6 @@ class DateMask extends TextInputFormatter {
       final newPosition = token.start + limit;
 
       tokenizer.idx = newPosition;
-
-      newValue = clipTextValue(newValue, newPosition);
 
       return newValue;
     }
