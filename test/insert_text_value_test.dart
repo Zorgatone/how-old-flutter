@@ -27,5 +27,16 @@ void main() {
 
       expect(modified.text, 'My example text');
     });
+
+    test('should throw out of range', () {
+      expect(
+        () => {insertTextValue(TextEditingValue.empty, index: -1, text: '')},
+        throwsRangeError,
+      );
+      expect(
+        () => {insertTextValue(TextEditingValue.empty, index: 1, text: '')},
+        throwsRangeError,
+      );
+    });
   });
 }

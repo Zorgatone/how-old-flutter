@@ -1,10 +1,11 @@
-import 'package:flutter/foundation.dart' show visibleForTesting; //, debugPrint;
+import 'package:flutter/foundation.dart' show visibleForTesting;
 import 'package:flutter/services.dart'
-    show TextInputFormatter, TextEditingValue, TextSelection, TextRange;
+    show TextInputFormatter, TextEditingValue;
+
 import 'package:how_old/constants.dart';
 import 'package:how_old/date_tokenizer.dart';
-import 'package:how_old/utils/clip_text_value.dart';
-import 'package:how_old/utils/insert_text_value.dart';
+import 'package:how_old/utils/clip_text_value.dart' show clipTextValue;
+import 'package:how_old/utils/insert_text_value.dart' show insertTextValue;
 
 class InvalidTokenException implements Exception {
   final String message;
@@ -24,10 +25,6 @@ class DateMask extends TextInputFormatter {
     TextEditingValue oldValue,
     TextEditingValue newValue,
   ) {
-    // watch.reset();
-    // watch.start();
-
-    // try {
     final newText = newValue.text;
     final oldText = oldValue.text;
 
@@ -61,42 +58,17 @@ class DateMask extends TextInputFormatter {
       tokenizer.idx = 0;
       final parsed = parseDate(newValue);
 
-      // debugPrint('returned parsed text: "${parsed.text}"');
       return parsed;
     } on InvalidTokenException catch (exception) {
-      // debugPrint('old: "${oldValue.text}" new: "$newText"');
-      if (exception.token.end == newText.runes.indexed.last.$1) {
-        // if (exception.token.start >= newText.length) {
-        //   debugPrint(
-        //     'token.start ${exception.token.start} is greater the text.length ${newText.length}',
-        //   );
-        // }
+      final iterator = newText.runes.iterator;
+      iterator.moveNext();
 
-        final result = TextEditingValue(
-          text: newValue.text.substring(0, exception.token.start),
-          // selection: newValue.selection.baseOffset < 0 ? newValue.selection :
-          //   newValue.selection.copyWith(
-          //     baseOffset: newValue.selection.baseOffset
-          //   )
-          // TODO: handle selection
-          selection: const TextSelection.collapsed(offset: -1),
-          // TODO: handle composing
-          composing: TextRange.empty,
-        );
-
-        // debugPrint('returned modified new text: "${result.text}"');
-        return result;
+      if (exception.token.end == iterator.rawIndex + iterator.currentSize) {
+        return clipTextValue(newValue, exception.token.start);
       }
     }
 
-    // debugPrint('returned old text: "${oldValue.text}"');
     return oldValue;
-    // } finally {
-    //   watch.stop();
-    //   debugPrint(
-    //     'DateMask.formatEditUpdate executed in ${watch.elapsedMicroseconds} microseconds  ',
-    //   );
-    // }
   }
 
   @visibleForTesting

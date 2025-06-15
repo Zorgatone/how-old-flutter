@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:how_old/constants.dart';
-import 'package:how_old/pages/home_page.dart';
+
+import 'package:how_old/constants.dart' show appName;
+import 'package:how_old/pages/home_page.dart' show HomePage;
 
 void main() {
   runApp(const MyApp());

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart' show DateFormat;
+
 import 'package:how_old/constants.dart';
 import 'package:how_old/date_mask.dart' show DateMask;
-import 'package:intl/intl.dart' show DateFormat;
 
 const _inputTextStyle = TextStyle(
   fontFamily: 'RobotoMono',

@@ -4,6 +4,20 @@ import 'package:how_old/date_mask.dart';
 void main() {
   group('DateMask class', () {
     group('formatEditUpdate method', () {
+      test('should skip any spaces', () {
+        final mask = DateMask();
+
+        var oldValue = const TextEditingValue(text: '');
+        var newValue = const TextEditingValue(text: ' ');
+
+        expect(mask.formatEditUpdate(oldValue, newValue), oldValue);
+
+        oldValue = const TextEditingValue(text: '10/07/');
+        newValue = const TextEditingValue(text: '10/07/ ');
+
+        expect(mask.formatEditUpdate(oldValue, newValue), oldValue);
+      });
+
       test(
         'fall back to old value with invalid characters at the end of input',
         () {
@@ -195,6 +209,15 @@ void main() {
 
           expect(mask.formatEditUpdate(oldValue, newValue), finalValue);
         }
+      });
+
+      test('should remove extra characters after complete valid date', () {
+        final mask = DateMask();
+
+        const oldValue = TextEditingValue(text: '10/07/1992');
+        const newValue = TextEditingValue(text: '10/07/19923');
+
+        expect(mask.formatEditUpdate(oldValue, newValue), oldValue);
       });
     });
   });

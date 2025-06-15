@@ -6,15 +6,11 @@ TextEditingValue insertTextValue(
   required int index,
   required String text,
 }) {
-  if (index < 0 || index > value.text.length) {
-    throw RangeError.index(index, value.text);
-  }
-
   String newText;
 
   if (index == 0) {
     newText = text + value.text;
-  } else if (index == text.length) {
+  } else if (index == value.text.length) {
     newText = value.text + text;
   } else {
     newText =
